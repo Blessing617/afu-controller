@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from theme import body_font, palette
+from theme import body_font, palette, title_font
 from tokens import ACCENT, ACCENT_DEEP, BRAND, BRAND_DEEP, MOTION_TAP_MS
 
 
@@ -232,3 +232,64 @@ class CandyFoldRow(QtWidgets.QPushButton):
             path.lineTo(cx + 4, cy + 3)
             path.lineTo(cx + 8, cy - 1.5)
         painter.drawPath(path)
+
+
+class CandyDialog(QtWidgets.QDialog):
+    """圆角卡片对话框：标题 + 说明 + 两个糖果按钮。
+
+    替代 QMessageBox：默认的 Windows 消息框是方角灰底，和现在这套界面不是一路的。
+    """
+
+    def __init__(
+        self,
+        parent: QtWidgets.QWidget | None,
+        title: str,
+        message: str,
+        confirm_text: str = "确定",
+        cancel_text: str = "取消",
+        danger: bool = False,
+    ) -> None:
+        super().__init__(parent)
+        # _is_dark 读的是 window().dark；对话框自己就是顶层，所以这里补一个同名属性
+        self.dark = bool(getattr(parent, "dark", False))
+        p = palette(self.dark)
+        self.setWindowFlags(QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint)
+        self.setModal(True)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+
+        outer = QtWidgets.QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        card = QtWidgets.QFrame()
+        card.setStyleSheet(
+            f"QFrame{{background:{p['surface']};border:1px solid {p['card_line']};"
+            f"border-radius:22px;}}"
+        )
+        outer.addWidget(card)
+
+        box = QtWidgets.QVBoxLayout(card)
+        box.setContentsMargins(22, 22, 22, 20)
+        box.setSpacing(12)
+
+        heading = QtWidgets.QLabel(title)
+        heading.setFont(title_font(17))
+        heading.setWordWrap(True)
+        box.addWidget(heading)
+
+        body = QtWidgets.QLabel(message)
+        body.setWordWrap(True)
+        body.setStyleSheet(f"color:{p['muted']};")
+        box.addWidget(body)
+
+        row = QtWidgets.QHBoxLayout()
+        row.setSpacing(10)
+        cancel = CandyButton(cancel_text, "ghost")
+        cancel.setFixedHeight(40)
+        cancel.clicked.connect(self.reject)
+        ok = CandyButton(confirm_text, "danger" if danger else "primary")
+        ok.setFixedHeight(40)
+        ok.clicked.connect(self.accept)
+        row.addWidget(cancel, 1)
+        row.addWidget(ok, 1)
+        box.addLayout(row)
+
+        self.setMinimumWidth(400)

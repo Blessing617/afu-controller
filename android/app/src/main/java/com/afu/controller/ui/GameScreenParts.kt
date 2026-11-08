@@ -52,6 +52,12 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -215,16 +221,40 @@ internal fun PrimaryActionBar(
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             if (running) {
-                // 运行中：只给「停止」，不给「开始」
-                CandyButton(
-                    text = "停止任务",
-                    onClick = vm::stop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    kind = CandyKind.Danger,
-                    fontSize = 17.sp,
+                // 运行中：只给「停止」，不给「开始」；外圈加一层呼吸光晕，
+                // 让「正在跑」这件事在远处也能一眼看到。停止后这层自然消失。
+                val glowTransition = rememberInfiniteTransition(label = "running-glow")
+                val glow by glowTransition.animateFloat(
+                    initialValue = 0f,
+                    targetValue = 1f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(1600, easing = LinearEasing),
+                        repeatMode = RepeatMode.Reverse,
+                    ),
+                    label = "running-glow-alpha",
                 )
+                Box(Modifier.fillMaxWidth().height(56.dp)) {
+                    Box(
+                        Modifier
+                            .matchParentSize()
+                            .graphicsLayer {
+                                scaleX = 1.03f
+                                scaleY = 1.10f
+                                alpha = 0.16f + glow * 0.20f
+                            }
+                            .clip(RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.error)
+                    )
+                    CandyButton(
+                        text = "停止任务",
+                        onClick = vm::stop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        kind = CandyKind.Danger,
+                        fontSize = 17.sp,
+                    )
+                }
             } else {
                 // 按钮文字要如实反映「这次会跑什么」：
                 // 没选子任务 → 「开始一键长草」（按引擎配置全跑）

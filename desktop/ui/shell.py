@@ -347,13 +347,17 @@ class MainWindow(OverviewPageMixin, DepsPageMixin, SettingsPageMixin, AssetsMixi
             from app.core.state import RUNNER
 
             if RUNNER.current() is not None:
-                ret = QtWidgets.QMessageBox.question(
+                from ui.candy import CandyDialog
+
+                dlg = CandyDialog(
                     self,
-                    "阿福代肝控制器",
-                    "有任务正在运行，确定要退出吗？",
-                    QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                    "还有任务在跑",
+                    "现在退出会中止正在运行的任务。确定要退出吗？",
+                    confirm_text="退出",
+                    cancel_text="再等等",
+                    danger=True,
                 )
-                if ret != QtWidgets.QMessageBox.Yes:
+                if dlg.exec() != QtWidgets.QDialog.Accepted:
                     event.ignore()
                     return
         except Exception:  # noqa: BLE001
