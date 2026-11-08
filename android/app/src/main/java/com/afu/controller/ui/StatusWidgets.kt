@@ -153,14 +153,16 @@ internal fun ScreenCard(screen: GameScreen, stale: Boolean, onRefresh: () -> Uni
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
                 )
-                androidx.compose.material3.OutlinedButton(
+                CandyButton(
+                    text = if (screen.loading) "正在刷新…" else "刷新一张",
                     onClick = onRefresh,
+                    kind = CandyKind.Ghost,
                     enabled = !screen.loading,
-                ) {
-                    Icon(Icons.Default.Refresh, null, Modifier.size(16.dp))
-                    Spacer(Modifier.width(4.dp))
-                    Text("刷新一张", fontSize = 12.sp)
-                }
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                        horizontal = 14.dp, vertical = 8.dp,
+                    ),
+                    fontSize = 12.sp,
+                )
             }
 
             if (screen.error.isNotBlank()) {

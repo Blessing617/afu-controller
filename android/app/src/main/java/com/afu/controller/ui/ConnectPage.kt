@@ -109,7 +109,7 @@ internal fun ConnectScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .statusBarsPadding()
+            // Scaffold 的 innerPadding 已经含系统栏高度，这里再加会多出一条空白
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
@@ -150,28 +150,20 @@ internal fun ConnectScreen(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
-        Button(
+        CandyButton(
+            text = when {
+                state.connecting -> "连接中…"
+                state.connected -> "重新连接"
+                else -> "连接"
+            },
             onClick = vm::connect,
             enabled = !state.connecting,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp),
-            shape = RoundedCornerShape(14.dp),
-        ) {
-            if (state.connecting) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(18.dp),
-                    strokeWidth = 2.dp,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
-                Spacer(Modifier.width(8.dp))
-                Text("连接中…", fontSize = 15.sp)
-            } else {
-                Icon(Icons.Default.Link, null, Modifier.size(18.dp))
-                Spacer(Modifier.width(6.dp))
-                Text(if (state.connected) "重新连接" else "连接", fontSize = 15.sp)
-            }
-        }
+                .height(56.dp),
+            kind = CandyKind.Primary,
+            fontSize = 17.sp,
+        )
 
         // 连接失败原因常驻显示。放这里而不是用 toast：
         // 用户需要边看提示边改地址，toast 一闪就没了。
@@ -272,26 +264,16 @@ internal fun ConnectScreen(
                 ),
                 modifier = Modifier.fillMaxWidth(),
             )
-            Button(
+            CandyButton(
+                text = if (state.pairing) "配对中…" else "配对",
                 onClick = { vm.pair(code) },
                 enabled = code.length == 6 && !state.pairing,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(14.dp),
-            ) {
-                if (state.pairing) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(18.dp),
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text("配对中…")
-                } else {
-                    Text("配对")
-                }
-            }
+                    .height(52.dp),
+                kind = CandyKind.Accent,
+                fontSize = 16.sp,
+            )
             if (state.pairError.isNotBlank()) {
                 Surface(
                     color = MaterialTheme.colorScheme.errorContainer,
@@ -305,21 +287,25 @@ internal fun ConnectScreen(
                     )
                 }
             }
-            androidx.compose.material3.OutlinedButton(
+            CandyButton(
+                text = "断开连接",
                 onClick = vm::disconnect,
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("断开连接") }
+                kind = CandyKind.Ghost,
+            )
 
             // 已配对时给一个明确的出口：不用找返回键/手势也能回去。
             // 用户反馈过「连上了却退不出连接页」，多一个显式按钮比只靠返回键靠谱。
             if (canGoBack) {
-                Button(
+                CandyButton(
+                    text = "完成，回到主界面",
                     onClick = onBack,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp),
-                    shape = RoundedCornerShape(14.dp),
-                ) { Text("完成，回到主界面", fontSize = 15.sp) }
+                        .height(56.dp),
+                    kind = CandyKind.Primary,
+                    fontSize = 17.sp,
+                )
             }
         }
 

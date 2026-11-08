@@ -94,7 +94,9 @@ internal fun GameShell(
 ) {
     val game = games.getOrElse(tab) { games[0] }
 
-    Column(Modifier.fillMaxSize().statusBarsPadding()) {
+    // Scaffold 已经把系统栏内边距算进 pad 了，这里不能再加 statusBarsPadding，
+    // 否则顶部会多出一整条状态栏高度的空白。
+    Column(Modifier.fillMaxSize()) {
         TopStatusBar(
             connected = state.connected,
             onOpenSettings = onOpenSettings,
@@ -181,7 +183,6 @@ internal fun GameShell(
             onOpenChain = onOpenChain,
             chainSelected = showChainPage,
         )
-        Spacer(Modifier.navigationBarsPadding())
     }
 }
 

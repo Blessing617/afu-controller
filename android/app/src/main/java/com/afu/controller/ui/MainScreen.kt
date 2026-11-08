@@ -162,10 +162,14 @@ fun MainScreen(vm: AppViewModel) {
     // 结果电脑没开机 / 网络不对的时候用户被关在里面出不去 —— 这是设计错误：
     // 连接页只是主界面之上的一层，任何时候都该能关掉。断线本身有绿色/红色
     // 状态条和「重新连接」按钮提示，不需要靠锁死页面来强调。
-    val blockBack = showConnect || showChain || showSettings
+    // 连接页有两条显示路径：手动打开（showConnect）与「还没配对时自动弹出」。
+    // 返回拦截必须同时认这两条，否则首次使用（未配对）时返回手势会直接退出 APP
+    // —— 这正是用户反馈的「从连接页滑动边缘退出变成了关掉 APP」。
+    val connectVisible = showConnect || (!state.paired && !skipAutoConnect)
+    val blockBack = connectVisible || showChain || showSettings
     BackHandler(enabled = blockBack) {
         when {
-            showConnect -> {
+            connectVisible -> {
                 showConnect = false
                 skipAutoConnect = true
             }
@@ -222,7 +226,7 @@ fun MainScreen(vm: AppViewModel) {
 
                 // 连接设置：手动打开，或首次使用（还没配对）时自动弹出。
                 // 注意这里只是「显示条件」，用户随时可以关掉它回到主界面。
-                SlideUpScreen(open = showConnect || (!state.paired && !skipAutoConnect)) {
+                SlideUpScreen(open = connectVisible) {
                     ConnectScreen(
                         vm = vm,
                         modifier = Modifier.fillMaxSize(),

@@ -105,6 +105,8 @@ internal fun TaskPickerSheet(
     val gapPx = with(density) { 6.dp.toPx() }
 
     AlertDialog(
+        shape = RoundedCornerShape(RADIUS_CARD.dp),
+        containerColor = MaterialTheme.colorScheme.surface,
         onDismissRequest = onDismiss,
         title = {
             Column {

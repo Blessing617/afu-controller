@@ -1,4 +1,4 @@
-﻿# Start the Game Orchestrator service elevated (run as Administrator).
+# Start the Game Orchestrator service elevated (run as Administrator).
 #
 # Why not a scheduled task: on this machine, processes started by Task Scheduler
 # run at *Low* integrity level, so they cannot write game folders (M7A config,
@@ -6,9 +6,11 @@
 
 $ErrorActionPreference = 'Stop'
 
-$python  = 'D:\DSH_WorkSpace\Game_play\server\.venv\Scripts\python.exe'
-$script  = 'D:\DSH_WorkSpace\Game_play\server\run.py'
-$workdir = 'D:\DSH_WorkSpace\Game_play\server'
+# 路径全部按脚本自身位置推导：这个仓库可以被 clone 到任意目录
+$root    = Split-Path -Parent $PSScriptRoot
+$python  = Join-Path $root 'server\.venv\Scripts\python.exe'
+$script  = Join-Path $root 'server\run.py'
+$workdir = Join-Path $root 'server'
 $port    = 8765
 
 Write-Host "=== Game Orchestrator - Start Elevated ===" -ForegroundColor Cyan

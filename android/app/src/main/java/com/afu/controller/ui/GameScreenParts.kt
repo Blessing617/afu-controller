@@ -123,9 +123,12 @@ internal fun GameExtraContent(vm: AppViewModel, state: UiState, game: String) {
                         "可能是电脑上的「阿福代肝控制器」没打开。打开后点下面的按钮重连。",
                         style = MaterialTheme.typography.bodySmall,
                     )
-                    Button(onClick = vm::connect, modifier = Modifier.fillMaxWidth()) {
-                        Text("重新连接")
-                    }
+                    CandyButton(
+                        text = "重新连接",
+                        onClick = vm::connect,
+                        modifier = Modifier.fillMaxWidth(),
+                        kind = CandyKind.Primary,
+                    )
                 }
             }
         } else {

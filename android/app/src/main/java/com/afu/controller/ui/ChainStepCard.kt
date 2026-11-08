@@ -242,6 +242,8 @@ internal fun ChainActionBar(
 @Composable
 internal fun AddStepDialog(onPick: (String) -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
+        shape = RoundedCornerShape(RADIUS_CARD.dp),
+        containerColor = MaterialTheme.colorScheme.surface,
         onDismissRequest = onDismiss,
         title = { Text("添加步骤") },
         text = {

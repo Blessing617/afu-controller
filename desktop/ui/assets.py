@@ -167,6 +167,26 @@ class AssetsMixin:
         roots.append(Path(__file__).resolve().parent.parent.parent / "assets" / "icons")
         return roots
 
+    def _decor_pixmap(self, name: str, width: int, height: int) -> QtGui.QPixmap:
+        """渲染装饰图形（水波、气泡、尾鳍），失败时返回空图不报错。"""
+        for base in self._asset_roots():
+            svg = base / f"{name}.svg"
+            if not svg.is_file():
+                continue
+            renderer = QtSvgRenderer(str(svg))
+            if not renderer.isValid():
+                continue
+            dpr = 2
+            pix = QtGui.QPixmap(width * dpr, height * dpr)
+            pix.fill(QtCore.Qt.transparent)
+            painter = QtGui.QPainter(pix)
+            painter.setRenderHint(QtGui.QPainter.Antialiasing)
+            renderer.render(painter)
+            painter.end()
+            pix.setDevicePixelRatio(dpr)
+            return pix
+        return QtGui.QPixmap()
+
     def _nav_icon(self, name: str, color: str, size: int = 18) -> QtGui.QIcon:
         """把 SVG 图标按指定颜色渲染成 QIcon。
 

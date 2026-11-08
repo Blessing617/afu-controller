@@ -167,6 +167,12 @@ class MainWindow(OverviewPageMixin, DepsPageMixin, SettingsPageMixin, AssetsMixi
 
         self.side_pill = CandyPill("正在检查地址", "#E0A030")
         side_layout.addWidget(self.side_pill)
+
+        # 底部水波装饰：让侧边栏不是一块死白的板，同时不影响任何交互
+        decor = QtWidgets.QLabel()
+        decor.setFixedHeight(26)
+        decor.setPixmap(self._decor_pixmap("decor-wave", SIDEBAR_W - 28, 26))
+        side_layout.addWidget(decor)
         side_layout.addSpacing(2)
 
         layout.addWidget(side)
