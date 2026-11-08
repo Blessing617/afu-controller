@@ -11,18 +11,11 @@
 
 本程序只是「胶水」：真正干活的是上面三个成熟的开源工具，本仓库不包含它们的代码与素材。
 
-<p>
-  <img src="docs/screenshots/desktop-overview.png" width="400" alt="电脑端总览" />
-  <img src="docs/screenshots/desktop-deps.png" width="400" alt="电脑端依赖清单" />
+<p align="center">
+  <img src="docs/screenshots/hero.png" width="880" alt="电脑端总览 + 手机端游戏页" />
 </p>
 
-<p>
-  <img src="docs/screenshots/phone-game.jpg" width="220" alt="手机端游戏页" />
-  <img src="docs/screenshots/phone-chain.jpg" width="220" alt="手机端编排页" />
-  <img src="docs/screenshots/phone-timer.jpg" width="220" alt="手机端定时设置" />
-</p>
-
-> 截图中的地址为示例；手机端画面区为空画面状态，避免露出本机内容。
+> 截图为界面演示：地址是示例值，手机端画面区为空画面状态。更多截图在 `docs/screenshots/`。
 
 ## 目录
 
