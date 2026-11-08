@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -279,11 +280,31 @@ internal fun TaskPickerSheet(
                 }
             }
         },
-        confirmButton = { TextButton(onClick = { onConfirm(picked) }) { Text("保存") } },
+        confirmButton = {
+            CandyButton(
+                text = "保存",
+                onClick = { onConfirm(picked) },
+                kind = CandyKind.Primary,
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+                fontSize = 14.sp,
+            )
+        },
         dismissButton = {
-            Row {
-                TextButton(onClick = { picked = emptyList() }) { Text("全不选") }
-                TextButton(onClick = onDismiss) { Text("取消") }
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                CandyButton(
+                    text = "全不选",
+                    onClick = { picked = emptyList() },
+                    kind = CandyKind.Ghost,
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                    fontSize = 13.sp,
+                )
+                CandyButton(
+                    text = "取消",
+                    onClick = onDismiss,
+                    kind = CandyKind.Ghost,
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                    fontSize = 13.sp,
+                )
             }
         },
     )

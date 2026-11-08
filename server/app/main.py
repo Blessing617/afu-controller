@@ -87,6 +87,14 @@ async def lifespan(app: FastAPI):
         except Exception:
             pass
 
+    # 手机端的 token 是落在 auth.json 里的，重启后仍然有效。
+    # 如果这里不把「已配对」恢复过来，桌面端会显示「未配对」，
+    # 而手机其实一直是连着用的 —— 两边状态对不上，用户会以为配对丢了。
+    from .core.auth import has_any_token
+
+    if has_any_token():
+        _S.paired = True
+
     ensure_pairing_code(int(cfg.get("pairing_code_ttl_seconds", 300)))
 
     # 服务常驻期间保持电脑唤醒：不然用户带手机出门，电脑一自动锁屏就什么都干不了
