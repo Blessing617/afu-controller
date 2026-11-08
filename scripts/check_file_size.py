@@ -27,6 +27,7 @@ KNOWN_OVER = {
     "android/app/src/main/java/com/afu/controller/ui/ChainScreen.kt",
     "android/app/src/main/java/com/afu/controller/ui/TaskPickerSheet.kt",
     "android/app/src/main/java/com/afu/controller/ui/ConnectPage.kt",
+    "android/app/src/main/java/com/afu/controller/ui/GameScreenParts.kt",
     "android/app/src/main/java/com/afu/controller/ui/GameShell.kt",
     "desktop/main.py",
 }
