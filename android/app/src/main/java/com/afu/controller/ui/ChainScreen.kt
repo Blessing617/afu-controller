@@ -84,27 +84,6 @@ import kotlin.math.roundToInt
 
 // ---- 编排主页面 ----
 
-internal val GAME_NAMES = mapOf(
-    "arknights" to "明日方舟",
-    "genshin" to "原神",
-    "starrail" to "星穹铁道",
-)
-internal val GAME_COLORS = mapOf(
-    "arknights" to Color(0xFF4A9E8F),
-    "genshin" to Color(0xFFE0A030),
-    "starrail" to Color(0xFF7B5CFF),
-)
-
-/**
- * 编排页：编辑任务链 + 一键跑完整条链。
- *
- * 布局：
- *   顶部：返回 + 标题 + 刷新
- *   中部：步骤列表（可上移/下移/删除/开关/点进选子任务）
- *   底部：策略切换 + 「一键跑完整条链」
- *
- * 运行中整页转成只读，底部换成进度 + 停止按钮。
- */
 @Composable
 fun ChainScreen(
     vm: AppViewModel,
@@ -143,35 +122,12 @@ fun ChainScreen(
             .background(MaterialTheme.colorScheme.background)
             .then(modifier),
     ) {
-        // ---------- 顶栏 ----------
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp, end = 8.dp, top = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
-            }
-            Text(
-                "编排",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-            )
-            Spacer(Modifier.width(8.dp))
-            if (running) {
-                Text(
-                    "执行中",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
-            Spacer(Modifier.weight(1f))
-            IconButton(onClick = { vm.refreshChain() }, enabled = !state.chainBusy) {
-                Icon(Icons.Default.Refresh, contentDescription = "刷新")
-            }
-        }
+        ChainTopBar(
+            running = running,
+            busy = state.chainBusy,
+            onBack = onBack,
+            onRefresh = { vm.refreshChain() },
+        )
 
         // ---------- 画面（始终显示，和游戏页保持一致） ----------
         //
@@ -340,70 +296,3 @@ fun ChainScreen(
         }
     }
 }
-
-internal fun move(list: List<ChainStep>, from: Int, to: Int): List<ChainStep> {
-    val m = list.toMutableList()
-    val item = m.removeAt(from)
-    m.add(to, item)
-    return m
-}
-
-/** 运行中的总进度条：第几步 / 共几步 + 各步状态点。 */
-@Composable
-internal fun ChainProgress(run: ChainRun) {
-    val done = run.steps.count {
-        it.state in listOf("success", "failed", "skipped", "stopped", "not_run")
-    }
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                "第 ${(run.currentIndex + 1).coerceAtLeast(1)}/${run.total} 步",
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Spacer(Modifier.weight(1f))
-            Text(
-                "${done}/${run.steps.size} 已完成",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            run.steps.forEach { s ->
-                Box(
-                    Modifier
-                        .weight(1f)
-                        .height(4.dp)
-                        .clip(CircleShape)
-                        .background(stepStateColor(s.state))
-                )
-            }
-        }
-    }
-}
-
-internal fun stepStateColor(state: String): Color = when (state) {
-    "running" -> Color(0xFF2F6FED)
-    "success" -> Color(0xFF3BA55D)
-    "failed" -> Color(0xFFE5484D)
-    "stopped" -> Color(0xFFE0A030)
-    "skipped", "not_run" -> Color(0xFFB0B8C4)
-    else -> Color(0xFFE0E4EA)
-}
-
-internal fun stepStateLabel(state: String): String = when (state) {
-    "pending" -> "等待中"
-    "running" -> "运行中"
-    "success" -> "成功"
-    "failed" -> "失败"
-    "stopped" -> "已停止"
-    "skipped" -> "已跳过"
-    "not_run" -> "未执行"
-    else -> state
-}
-

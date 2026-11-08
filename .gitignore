@@ -35,8 +35,7 @@ keystore.properties
 *.log
 data/config.json
 
-# ---- 内部资料：设计过程记录与验证报告，不对外公开 ----
-.spec/
+# ---- 内部资料：内部验证报告不对外公开（设计记录 .spec/ 会上库，与阿福记账一致）----
 docs/00-*.md
 docs/01-*.md
 docs/02-*.md
