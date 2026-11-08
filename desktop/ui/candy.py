@@ -151,6 +151,9 @@ class CandyPill(QtWidgets.QWidget):
     def set_state(self, text: str, color: str) -> None:
         self._text = text
         self._color = QtGui.QColor(color)
+        # 文字变长后必须重算 sizeHint，否则布局还按旧宽度排，
+        # 后面的字会被裁掉（曾经四步检查表只显示出「①」就是这个原因）。
+        self.updateGeometry()
         self.update()
 
     def set(self, text: str, color: str) -> None:  # 兼容旧的 StatusPill 调用
