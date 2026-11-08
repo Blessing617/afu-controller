@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <!--
+    崩坏：星穹铁道 · 风格化图标（原创）
+    思路：不画列车或角色，只取「星轨」——一条穿过圆环的斜向轨迹加一颗亮点。
+    构图与另外两个游戏明显不同：前两个是左右对称的，这个是斜向的。
+    配色取自 tokens.py 里 starrail 的紫色。
+  -->
+  <defs>
+    <linearGradient id="sr-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7B5CFF"/>
+      <stop offset="100%" stop-color="#5B3FD6"/>
+    </linearGradient>
+    <linearGradient id="sr-shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="96" height="96" rx="22" fill="url(#sr-bg)"/>
+  <rect width="96" height="96" rx="22" fill="url(#sr-shine)"/>
+
+  <!-- 轨道环：一个不闭合的圆环，留出缺口让轨迹穿过去 -->
+  <path d="M 68 33 A 24 24 0 1 1 40 26"
+        fill="none" stroke="#EDE8FF" stroke-width="4.5"
+        stroke-linecap="round" opacity="0.85"/>
+
+  <!-- 星轨：一条斜向的弧线，从右下穿到左上 -->
+  <path d="M 26 72 C 40 62, 56 44, 72 26"
+        fill="none" stroke="#FFFFFF" stroke-width="5"
+        stroke-linecap="round"/>
+
+  <!-- 轨道上的亮点 -->
+  <circle cx="72" cy="26" r="5.5" fill="#FFFFFF"/>
+  <circle cx="72" cy="26" r="9.5" fill="#FFFFFF" opacity="0.22"/>
+</svg>

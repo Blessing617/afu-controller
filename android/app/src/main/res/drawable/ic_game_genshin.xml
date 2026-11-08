@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  原神 · 风格化图标（原创绘制，不使用任何游戏厂商素材）
+
+  构图：一对从中心向上外扬的羽翼 + 中央一道细竖线（风）+ 底部一点。
+  与另外两个游戏靠「对称展翼 + 金色」区分。
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <path
+        android:pathData="M0,22 A22,22 0 0 1 22,0 L74,0 A22,22 0 0 1 96,22 L96,74 A22,22 0 0 1 74,96 L22,96 A22,22 0 0 1 0,74 Z"
+        android:fillColor="#FFE0A030" />
+
+    <!-- 左翼 -->
+    <path
+        android:pathData="M46,62 C36,60 24,50 22,34 C34,40 43,48 47,57 Z"
+        android:fillColor="#FFFFF7E6" />
+
+    <!-- 右翼 -->
+    <path
+        android:pathData="M50,62 C60,60 72,50 74,34 C62,40 53,48 49,57 Z"
+        android:fillColor="#FFFFF7E6" />
+
+    <!-- 中央的风 -->
+    <path
+        android:pathData="M48,30 L48,64"
+        android:strokeColor="#FFFFF7E6"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round" />
+
+    <path
+        android:pathData="M48,65.8 A3.2,3.2 0 1 1 47.9,65.8 Z"
+        android:fillColor="#FFFFF7E6" />
+</vector>

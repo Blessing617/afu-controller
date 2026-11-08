@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  明日方舟 · 风格化图标（原创绘制，不使用任何游戏厂商素材）
+
+  构图：朝右的等腰三角（船首）+ 一道竖线，代表「方舟」的结构感。
+  与另外两个游戏靠「对称三角形 + 青绿色」区分。
+
+  说明：这里只用单色填充，渐变由 Compose 层叠加，
+  这样 drawable 保持简单、在 tint 与夜间模式下都不会出问题。
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <path
+        android:pathData="M0,22 A22,22 0 0 1 22,0 L74,0 A22,22 0 0 1 96,22 L96,74 A22,22 0 0 1 74,96 L22,96 A22,22 0 0 1 0,74 Z"
+        android:fillColor="#FF4A9E8F" />
+
+    <path
+        android:pathData="M30,30 L68,48 L30,66 Z"
+        android:strokeColor="#FFEAFBF7"
+        android:strokeWidth="6"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <path
+        android:pathData="M44,38 L44,58"
+        android:strokeColor="#FFEAFBF7"
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round" />
+</vector>

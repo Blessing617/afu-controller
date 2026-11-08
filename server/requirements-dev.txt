@@ -1,0 +1,6 @@
+# 开发依赖：装完 requirements.txt 再装这个
+-r requirements.txt
+
+pytest==9.2.0
+pyinstaller==6.22.3
+pyinstaller-hooks-contrib==2026.9

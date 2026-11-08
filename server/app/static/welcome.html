@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>阿福代肝控制器 · 新手引导</title>
+<!--
+  自包含静态页：样式与脚本全内联，不引用外部 CDN（断网也能看）。
+  内容与 docs/新手图文教程.md 保持一致，改一处记得同步另一处。
+  图片走 /static/guide/...，由 serve_static 提供。
+-->
+<style>
+  :root {
+    --bg: #0f1720; --card: #16202b; --card2: #1d2a37; --line: #263444;
+    --text: #e6edf3; --muted: #8b98a8; --brand: #4d8dff;
+    --ok: #3ba55d; --warn: #e0a030; --bad: #e5484d;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg:#f5f7fa; --card:#fff; --card2:#f0f3f7; --line:#dfe5ec;
+            --text:#1a2230; --muted:#5f6b7a; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.7 "Microsoft YaHei UI","PingFang SC",system-ui,sans-serif;
+    padding: 28px 16px 60px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  header { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .logo {
+    width: 44px; height: 44px; border-radius: 13px; flex: none;
+    background: linear-gradient(135deg,#4d8dff,#7b5cff);
+    display: grid; place-items: center; font-size: 22px;
+  }
+  h1 { font-size: 21px; margin: 0; font-weight: 650; }
+  .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .step { color: var(--muted); font-size: 13px; margin-left: auto; }
+
+  /* 步骤导航 */
+  .steps { display: flex; gap: 6px; margin: 22px 0 6px; flex-wrap: wrap; }
+  .dot {
+    flex: 1; min-width: 90px; text-align: center; cursor: pointer;
+    padding: 9px 6px; border-radius: 10px; font-size: 12.5px;
+    background: var(--card2); border: 1px solid var(--line); color: var(--muted);
+    user-select: none;
+  }
+  .dot.active { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 600; }
+  .dot.done { border-color: var(--ok); color: var(--ok); }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px; margin-top: 16px;
+  }
+  .card h2 { font-size: 18px; margin: 0 0 4px; font-weight: 650; }
+  .card .lead { color: var(--muted); font-size: 13.5px; margin: 0 0 16px; }
+  .card ul { margin: 10px 0; padding-left: 22px; }
+  .card li { margin: 8px 0; }
+  .card ol { margin: 10px 0; padding-left: 22px; }
+  .card ol li { margin: 10px 0; }
+
+  .box {
+    background: var(--card2); border-radius: 11px; padding: 14px 16px;
+    margin: 14px 0; font-size: 13.5px;
+  }
+  .box.warn { border-left: 3px solid var(--warn); }
+  .box.bad { border-left: 3px solid var(--bad); }
+  .box.ok { border-left: 3px solid var(--ok); }
+
+  .mono {
+    font-family: Consolas,ui-monospace,monospace;
+    background: var(--card2); padding: 2px 8px; border-radius: 6px; font-size: 13px;
+  }
+  pre {
+    background: var(--card2); border: 1px solid var(--line); border-radius: 9px;
+    padding: 12px 14px; overflow-x: auto; font-size: 13px; line-height: 1.5;
+  }
+  img {
+    max-width: 100%; border-radius: 10px; border: 1px solid var(--line);
+    margin: 12px 0; display: block;
+  }
+  .caption { color: var(--muted); font-size: 12.5px; margin-top: -6px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: 12.5px; }
+  a { color: var(--brand); }
+
+  .nav { display: flex; gap: 10px; margin-top: 22px; align-items: center; }
+  .spacer { flex: 1; }
+  button {
+    font: inherit; font-size: 14px; cursor: pointer;
+    background: var(--card2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 10px; padding: 9px 18px;
+  }
+  button:hover { border-color: var(--brand); }
+  button.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+  button.ghost { background: transparent; border-color: transparent; color: var(--muted); }
+  button.ghost:hover { color: var(--text); }
+  .hide { display: none !important; }
+
+  details { margin: 10px 0; }
+  summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
+  details p, details ul { color: var(--muted); font-size: 13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">🎮</div>
+    <div>
+      <h1>阿福代肝控制器 · 新手引导</h1>
+      <div class="sub">从零开始，大约 40 分钟。装的东西只用装一次。</div>
+    </div>
+    <div class="step" id="stepLabel">第 1 / 5 步</div>
+  </header>
+
+  <!-- 步骤导航 -->
+  <div class="steps" id="steps"></div>
+
+  <!-- ============ 第 0 步：这个教程适合你吗 ============ -->
+  <section class="card" id="s0">
+    <h2>开始之前：这份教程适合你吗？</h2>
+    <p class="lead">先说清楚这个程序是干什么的，以及它的边界。</p>
+
+    <div class="box ok">
+      <b>✅ 适合你，如果你</b>
+      <ul style="margin-bottom:0">
+        <li>玩《明日方舟》《原神》《崩坏：星穹铁道》中的至少一个</li>
+        <li><b>已经用过或愿意用</b> MAA / BetterGI / 三月七小助手这类自动化工具</li>
+        <li>想「人不在电脑前，也能让电脑把日常跑完」</li>
+      </ul>
+    </div>
+
+    <div class="box warn">
+      <b>❌ 不适合你，如果你</b>
+      <ul style="margin-bottom:0">
+        <li>你期待本程序<b>替你操作游戏</b> —— 不，它只是遥控器，
+            真正干活的是 MAA / BetterGI / 三月七</li>
+        <li>你完全没接触过自动化工具 —— 能装，但<b>建议先把 MAA 单独用熟</b>再回来</li>
+        <li>只是偶尔上线看看游戏 —— 装一堆工具不值得</li>
+      </ul>
+    </div>
+
+    <div class="box bad">
+      <b>⚠️ 必须知道</b>
+      <ul style="margin-bottom:0">
+        <li>本程序<b>不修改游戏、不读游戏内存</b>，只是把点击转给第三方工具</li>
+        <li><b>封号风险没有任何官方承诺</b>。用不用请自己判断</li>
+        <li>本程序是<b>胶水</b>，能力上限 = 你装的三个工具的能力上限</li>
+        <li>所有数据（配对凭据、日志、配置）<b>只存在你自己电脑上</b></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 第 1 步：装三个工具 ============ -->
+  <section class="card hide" id="s1">
+    <h2>第一步：装三个自动化工具</h2>
+    <p class="lead">
+      这一步和本程序没有任何关系，全是第三方开源工具。
+      <b>建议每个工具先单独跑通一次</b>，确认它能正常操作游戏，再回来看本程序。
+    </p>
+
+    <table>
+      <tr><th>你玩</th><th>需要装</th><th>大概耗时</th></tr>
+      <tr><td>只玩明日方舟</td><td>MAA + MuMu 模拟器 + 游戏本体</td><td>20 分钟</td></tr>
+      <tr><td>只玩原神</td><td>BetterGI + 游戏本体</td><td>10 分钟</td></tr>
+      <tr><td>只玩星铁</td><td>三月七小助手 + 游戏本体</td><td>10 分钟</td></tr>
+      <tr><td>都玩</td><td>上面全部</td><td>40 分钟</td></tr>
+    </table>
+
+    <details>
+      <summary>明日方舟 → MAA + MuMu</summary>
+      <ol>
+        <li>打开 <a href="https://mumu.163.com/download/" target="_blank" rel="noopener">mumu.163.com/download</a> 装 MuMu 模拟器</li>
+        <li>在模拟器里装《明日方舟》并登录</li>
+        <li>打开 <a href="https://maa.plus/" target="_blank" rel="noopener">maa.plus</a> 下载 Windows x64 版</li>
+        <li><b>解压到简单路径</b>，比如 <span class="mono">D:\MAA</span>。
+            别放 <span class="mono">C:\Program Files</span>（需要管理员权限会出错）</li>
+        <li>先运行目录里的 <span class="mono">DependencySetup_依赖库安装.bat</span>，再双击 <span class="mono">MAA.exe</span></li>
+        <li>在 MAA 里添加账号、连接 MuMu</li>
+        <li><b>手动点一次「开始唤醒」和日常</b>，确认能正常工作</li>
+      </ol>
+      <div class="box warn">
+        🔑 <b>关键一步</b>：MAA 设置里要打开<b>远程控制</b>
+        （设置 → 远程控制 → 记住端口，默认 8080）。本程序靠它给 MAA 下发任务。
+      </div>
+    </details>
+
+    <details>
+      <summary>原神 → BetterGI</summary>
+      <ol>
+        <li>打开 <a href="https://www.bettergi.com/" target="_blank" rel="noopener">bettergi.com</a> 下载</li>
+        <li>解压运行，首次启动会让你选《原神》的游戏目录</li>
+        <li><b>在 BetterGI 里手动跑一次「一条龙」</b>，确认能正常工作</li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>星穹铁道 → 三月七小助手</summary>
+      <ol>
+        <li>打开 <a href="https://m7a.top/" target="_blank" rel="noopener">m7a.top</a> 下载</li>
+        <li>解压运行，让它自动识别游戏的安装位置</li>
+        <li><b>手动跑一次日常</b>，确认能正常工作</li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>游戏本体还没装？</summary>
+      <ul>
+        <li>《原神》 <a href="https://ys.mihoyo.com/" target="_blank" rel="noopener">ys.mihoyo.com</a></li>
+        <li>《崩坏：星穹铁道》 <a href="https://sr.mihoyo.com/" target="_blank" rel="noopener">sr.mihoyo.com</a></li>
+        <li>《明日方舟》在 MuMu 模拟器里装</li>
+      </ul>
+    </details>
+
+    <div class="box">
+      装完之后，本程序会自动找到它们。找不到的话，本程序「依赖清单」页可以手动指定路径。
+    </div>
+  </section>
+
+  <!-- ============ 第 2 步：Tailscale + Funnel ============ -->
+  <section class="card hide" id="s2">
+    <h2>第二步：拿到你的固定地址</h2>
+    <p class="lead">
+      这一步是为了让<b>你出门在外时，手机也能连回家里的电脑</b>。
+      Tailscale <b>只装在电脑上</b>，手机端不用装。
+    </p>
+
+    <div class="box">
+      <b>这个地址是怎么来的？</b><br>
+      它不是凭空有的，是你做完下面四步之后，Tailscale 给你的：
+      <table style="margin-bottom:0">
+        <tr><th>步骤</th><th>做完之后</th></tr>
+        <tr><td>① 注册 Tailscale 账号</td><td>有账号了，<b>还没有地址</b></td></tr>
+        <tr><td>② 电脑安装 Tailscale</td><td>装了，<b>还没有地址</b></td></tr>
+        <tr><td>③ 点 Log in 登录</td><td>有内网地址，<b>手机还连不上</b></td></tr>
+        <tr><td>④ 开启 Funnel</td><td><b>🎉 公网固定地址出现了</b></td></tr>
+      </table>
+    </div>
+
+    <ol>
+      <li>
+        <b>注册</b>：打开 <a href="https://login.tailscale.com/start" target="_blank" rel="noopener">login.tailscale.com/start</a>，
+        用 Google / GitHub / 微软账号登录（免费档够用）
+      </li>
+      <li>
+        <b>装到电脑上</b>：从
+        <a href="https://tailscale.com/download/windows" target="_blank" rel="noopener">tailscale.com/download/windows</a>
+        下载安装。装完右下角托盘区会有图标（可能要点开 <span class="mono">^</span> 箭头）
+      </li>
+      <li>
+        <b>登录</b>：点托盘图标 →「Log in」→ 浏览器里点授权
+      </li>
+      <li>
+        <b>开启 Funnel</b>：用<b>管理员身份</b>打开 PowerShell，执行：
+        <pre>tailscale funnel --bg 8765</pre>
+        第一次会弹浏览器让你<b>点一次授权</b>。完成后会输出类似：
+        <pre>Available on the internet:
+https://你的主机名.你的随机串.ts.net
+|-- / proxy http://127.0.0.1:8765</pre>
+      </li>
+    </ol>
+
+    <div class="box warn">
+      <b>关于那串随机字符</b><br>
+      地址由三段组成：<span class="mono">https://主机名.随机串.ts.net</span>
+      <ul style="margin-bottom:0">
+        <li><b>主机名</b> = 你电脑的名字</li>
+        <li><b>随机串</b> = Tailscale 注册时随机分配的，<b>每个人都不一样</b></li>
+        <li><b>ts.net</b> = 固定后缀</li>
+      </ul>
+      所以<b>不能照抄别人的地址</b>，必须用你自己电脑上显示的那个。
+      记不住也没关系——本程序会自动读到并显示出来。
+    </div>
+
+    <div class="box ok">
+      这一步<b>只需要做一次</b>。以后开机、重启程序，地址都不会变。
+    </div>
+  </section>
+
+  <!-- ============ 第 3 步：装电脑端 ============ -->
+  <section class="card hide" id="s3">
+    <h2>第三步：装本程序（电脑端）</h2>
+    <p class="lead">解压即用，不需要安装。</p>
+
+    <ol>
+      <li>从本项目 Releases 下载 <span class="mono">阿福代肝控制器.zip</span>，解压到任意位置（别放 Program Files）</li>
+      <li>双击 <span class="mono">阿福代肝控制器.exe</span></li>
+      <li>弹 UAC 权限请求 → <b>点「是」</b>（必须，否则无法模拟键鼠）</li>
+    </ol>
+
+    <p><b>打开后你会看到：</b></p>
+    <img src="/static/guide/desktop-overview-full.png" alt="总览页">
+    <p class="caption">总览页</p>
+
+    <table>
+      <tr><th>区域</th><th>看什么</th></tr>
+      <tr><td>服务</td><td>绿点「服务运行中」= 正常；「✓ 运行所需的软件都装好了」= 第一步装的东西它都找到了</td></tr>
+      <tr><td>① 填地址</td><td>那个 <span class="mono">https://xxx.ts.net</span> 就是要填到手机里的，旁边有「复制地址」</td></tr>
+      <tr><td>② 填配对码</td><td>手机配对时输入的 6 位数字</td></tr>
+      <tr><td>游戏状态</td><td>三个游戏各显示「可用」或「缺什么」</td></tr>
+    </table>
+
+    <div class="box">
+      如果显示「⚠ 还缺 XXX」，去左侧「<b>依赖清单</b>」页看是哪一项没装好，那里有官网下载链接。
+    </div>
+  </section>
+
+  <!-- ============ 第 4 步：装 APP 并连接 ============ -->
+  <section class="card hide" id="s4">
+    <h2>第四步：装 APP 并连上电脑</h2>
+
+    <h3 style="font-size:15px;margin:18px 0 8px">4-A 安装 APP</h3>
+    <p>从本项目 Releases 下载 <span class="mono">阿福代肝控制器.apk</span> 装到手机上（允许「未知来源应用」）。</p>
+
+    <h3 style="font-size:15px;margin:18px 0 8px">4-B 填地址和配对码</h3>
+    <img src="/static/guide/phone-connect-page.png" alt="手机连接页">
+    <p class="caption">手机 APP 的连接页</p>
+
+    <table>
+      <tr><th>填什么</th><th>从哪来</th></tr>
+      <tr><td>电脑地址</td><td>电脑端「总览」页的 <span class="mono">https://xxx.ts.net</span>，点「复制地址」</td></tr>
+      <tr><td>配对码</td><td>电脑端「总览」页的「② 填配对码」</td></tr>
+    </table>
+
+    <p>填完地址点「<b>连接</b>」，连上后填配对码点「<b>配对</b>」。成功会显示
+      <span class="mono">● 已连上电脑 · 服务版本 x.x.x</span>。</p>
+
+    <div class="box warn">
+      <b>在同一个 WiFi 下？</b> 手机和电脑连同一个路由器时，可以直接点「搜索同一网络里的电脑」，
+      不用手抄地址。出门在外才需要填那个 <span class="mono">https://</span> 地址。
+    </div>
+
+    <div class="box">
+      <b>电脑端显示「还拿不到地址」？</b> 说明第二步第 4 小步（开启 Funnel）没做完。
+      电脑端「连接」页有四步检查表，哪一步红就去做哪一步。
+    </div>
+  </section>
+
+  <!-- ============ 第 5 步：用起来 ============ -->
+  <section class="card hide" id="s5">
+    <h2>第五步：用起来</h2>
+
+    <img src="/static/guide/phone-game-page.png" alt="手机游戏页">
+    <p class="caption">连上之后的主界面</p>
+
+    <ul>
+      <li><b>底部三个图标</b>：切换 明日方舟 / 原神 / 星穹铁道</li>
+      <li><b>画面</b>：电脑屏幕的实时截图，任务在跑时自动刷新</li>
+      <li><b>「开始XXX」按钮</b>：固定在底部，点一下启动对应的一条龙</li>
+      <li><b>「关闭并释放内存」</b>：任务结束后关掉游戏和工具</li>
+    </ul>
+
+    <table>
+      <tr><th>想做什么</th><th>怎么做</th></tr>
+      <tr><td>跑原神一条龙</td><td>底部点「原神」→「开始一条龙」</td></tr>
+      <tr><td>看任务跑到哪了</td><td>看画面区，或看下方任务卡片的日志</td></tr>
+      <tr><td>中途停下</td><td>底部「停止任务」</td></tr>
+      <tr><td>换一台电脑</td><td>「连接设置」→ 填新地址 → 重新配对</td></tr>
+      <tr><td>释放内存</td><td>「关闭并释放内存」</td></tr>
+    </table>
+
+    <div class="box">
+      任务<b>正常结束</b>（成功/失败/超时）会自动关掉游戏和工具释放内存；
+      如果你是<b>手动点停止</b>的不会自动清理（可能你还要接着玩），需要时点「关闭并释放内存」。
+    </div>
+
+    <div class="box ok">
+      <b>🎉 到这里就全部完成了。</b><br>
+      以后开机只需要：双击阿福代肝控制器 → 手机打开 APP 就能用（地址和配对都记住了）。
+    </div>
+  </section>
+
+  <div class="nav">
+    <button class="ghost" id="skipBtn" onclick="finish()">跳过，直接开始</button>
+    <div class="spacer"></div>
+    <button id="prevBtn" onclick="go(-1)" class="hide">上一步</button>
+    <button id="nextBtn" class="primary" onclick="go(1)">下一步</button>
+  </div>
+</div>
+
+<script>
+const TOTAL = 6;  // 0..5
+const TITLES = ["适合你吗", "装三个工具", "拿固定地址", "装电脑端", "装 APP", "用起来"];
+let current = 0;
+
+function buildDots() {
+  const box = document.getElementById("steps");
+  box.innerHTML = "";
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement("div");
+    d.className = "dot" + (i === current ? " active" : "") + (i < current ? " done" : "");
+    d.textContent = (i === 0 ? "0 " : i + " ") + TITLES[i];
+    d.onclick = () => { current = i; render(); };
+    box.appendChild(d);
+  }
+}
+
+function render() {
+  for (let i = 0; i < TOTAL; i++) {
+    document.getElementById("s" + i).classList.toggle("hide", i !== current);
+  }
+  document.getElementById("stepLabel").textContent = `第 ${current + 1} / ${TOTAL} 步`;
+  document.getElementById("prevBtn").classList.toggle("hide", current === 0);
+  document.getElementById("nextBtn").textContent =
+    current === TOTAL - 1 ? "开始使用" : "下一步";
+  buildDots();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function go(delta) {
+  const next = current + delta;
+  if (next >= TOTAL) { finish(); return; }
+  current = Math.min(Math.max(next, 0), TOTAL - 1);
+  render();
+}
+
+async function finish() {
+  try {
+    await fetch("/api/onboarding/done", { method: "POST" });
+  } catch (_) { /* 网络失败也照样放行，别把用户卡住 */ }
+  location.href = "/";
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <!--
+    明日方舟 · 风格化图标（原创）
+    思路：不画任何游戏素材，只取「方舟 + 罗德岛徽章的几何感」：
+    一个船首三角轮廓 + 左侧竖直的立方体切面，密实的等距线条。
+    配色取自 tokens.py 里 arknights 的青绿。
+  -->
+  <defs>
+    <linearGradient id="ak-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4A9E8F"/>
+      <stop offset="100%" stop-color="#3A7F73"/>
+    </linearGradient>
+    <linearGradient id="ak-shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="96" height="96" rx="22" fill="url(#ak-bg)"/>
+  <rect width="96" height="96" rx="22" fill="url(#ak-shine)"/>
+
+  <!-- 船首：一个朝右的等腰三角，底边略带弧度，像劈开水面 -->
+  <path d="M30 30 L68 48 L30 66 Z"
+        fill="none" stroke="#EAFBF7" stroke-width="6"
+        stroke-linejoin="round"/>
+
+  <!--
+    内部只保留一道竖线。
+    之前画了两道（一粗一细），实测缩到 24dp 时糊成一片，
+    所以小尺寸下只留能辨认的一笔。
+  -->
+  <line x1="44" y1="38" x2="44" y2="58" stroke="#EAFBF7" stroke-width="4.5" stroke-linecap="round"/>
+</svg>

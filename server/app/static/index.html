@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>阿福代肝控制器 · 控制台</title>
+<!--
+  自包含：所有样式与脚本都内联在这个文件里，不引用任何外部 CDN。
+  原因：以前用 FastAPI 默认的 /docs，它的 swagger-ui 静态资源指向 cdn.jsdelivr.net，
+  国内网络下实测 5 秒才响应，浏览器直接白屏，用户以为「网页打不开」。
+-->
+<style>
+  :root {
+    --bg: #0f1720;
+    --card: #16202b;
+    --card2: #1d2a37;
+    --line: #263444;
+    --text: #e6edf3;
+    --muted: #8b98a8;
+    --brand: #4d8dff;
+    --ok: #3ba55d;
+    --warn: #e0a030;
+    --bad: #e5484d;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --card2: #f0f3f7;
+      --line: #dfe5ec;
+      --text: #1a2230;
+      --muted: #5f6b7a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.6 "Microsoft YaHei UI", "PingFang SC", system-ui, -apple-system, sans-serif;
+    padding: 24px 16px 48px;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .logo {
+    width: 40px; height: 40px; border-radius: 12px; flex: none;
+    background: linear-gradient(135deg, #4d8dff, #7b5cff);
+    display: grid; place-items: center; font-size: 20px;
+  }
+  h1 { font-size: 20px; margin: 0; font-weight: 650; }
+  .sub { color: var(--muted); font-size: 13px; margin-left: auto; }
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 18px; margin-top: 16px;
+  }
+  .card h2 {
+    font-size: 14px; margin: 0 0 14px; font-weight: 600;
+    color: var(--muted); letter-spacing: .04em;
+  }
+  .row { display: flex; align-items: baseline; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
+  .label { color: var(--muted); min-width: 84px; font-size: 13px; }
+  .mono {
+    font-family: Consolas, "Cascadia Mono", ui-monospace, monospace;
+    background: var(--card2); padding: 3px 8px; border-radius: 7px;
+    word-break: break-all; font-size: 13px;
+  }
+  .code {
+    font-family: Consolas, ui-monospace, monospace;
+    font-size: 30px; font-weight: 700; letter-spacing: .22em;
+    color: #2ecc8f;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block; margin-right: 6px; flex: none;
+  }
+  .dot.ok { background: var(--ok); }
+  .dot.bad { background: var(--bad); }
+  .dot.warn { background: var(--warn); }
+  .dep {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 0; border-top: 1px solid var(--line);
+  }
+  .dep:first-of-type { border-top: 0; }
+  .dep .name { flex: 1; font-size: 14px; }
+  .dep .role { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .dep a {
+    color: var(--brand); text-decoration: none; font-size: 13px;
+    border: 1px solid var(--line); padding: 4px 10px; border-radius: 8px;
+    white-space: nowrap;
+  }
+  .dep a:hover { border-color: var(--brand); }
+  .tag {
+    font-size: 12px; padding: 2px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  .tag.ok { background: rgba(59,165,93,.15); color: var(--ok); }
+  .tag.bad { background: rgba(229,72,77,.15); color: var(--bad); }
+  .tag.opt { background: rgba(224,160,48,.15); color: var(--warn); }
+  .hint { color: var(--muted); font-size: 13px; margin-top: 10px; }
+  button {
+    font: inherit; font-size: 13.5px; cursor: pointer;
+    background: var(--card2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 9px; padding: 7px 14px;
+  }
+  button:hover { border-color: var(--brand); }
+  button.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .top-actions { display: flex; gap: 8px; margin-left: auto; }
+  footer { color: var(--muted); font-size: 12.5px; text-align: center; margin-top: 28px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">🎮</div>
+    <h1>阿福代肝控制器</h1>
+    <div class="top-actions">
+      <button onclick="load()">刷新</button>
+      <button onclick="location.href='/docs'">接口文档</button>
+    </div>
+  </header>
+  <div class="sub" id="version">正在读取…</div>
+
+  <div class="card">
+    <h2>服务状态</h2>
+    <div class="row"><span class="label">运行情况</span>
+      <span id="status"><span class="dot warn"></span>读取中</span></div>
+    <div class="row"><span class="label">服务版本</span><span class="mono" id="ver">—</span></div>
+    <div class="row"><span class="label">已运行</span><span id="uptime">—</span></div>
+  </div>
+
+  <div class="card">
+    <h2>手机连接</h2>
+    <div class="row"><span class="label">配对状态</span>
+      <span id="pairstate"><span class="dot warn"></span>读取中</span></div>
+    <div class="hint" id="code-hint">
+      配对码显示在电脑端「阿福代肝控制器」窗口里（出于安全考虑不在网页上显示）。
+      手机 APP 也可以直接自动搜索电脑，搜到点一下即可。
+    </div>
+    <div class="row" style="margin-top:16px"><span class="label">本机地址</span>
+      <span id="addrs">—</span></div>
+  </div>
+
+  <div class="card">
+    <h2>依赖清单</h2>
+    <div id="deps"><div class="hint">正在探测游戏与工具…</div></div>
+    <div class="hint">
+      这些软件需要在电脑上自行安装，本程序不代为下载。
+      装好后点「刷新」重新探测。
+    </div>
+  </div>
+
+  <footer>阿福代肝控制器 · 本页面完全离线渲染，不依赖任何外部 CDN</footer>
+</div>
+
+<script>
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g,
+  (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+async function jget(url) {
+  const r = await fetch(url, { cache: "no-store" });
+  if (!r.ok) throw new Error(r.status + " " + r.statusText);
+  return r.json();
+}
+
+async function loadHealth() {
+  try {
+    const h = await jget("/api/health");
+    document.getElementById("status").innerHTML =
+      '<span class="dot ok"></span>服务运行中';
+    document.getElementById("ver").textContent = h.version || "—";
+    document.getElementById("version").textContent =
+      "v" + (h.version || "?") + (h.pairing_pending ? " · 等待配对" : " · 已配对");
+    document.getElementById("pairstate").innerHTML = h.pairing_pending
+      ? '<span class="dot warn"></span>等待手机配对'
+      : '<span class="dot ok"></span>已有设备配对';
+    if (typeof h.uptime_seconds === "number") {
+      const s = Math.floor(h.uptime_seconds);
+      const hh = Math.floor(s / 3600), mm = Math.floor((s % 3600) / 60), ss = s % 60;
+      document.getElementById("uptime").textContent =
+        (hh ? hh + " 小时 " : "") + (mm ? mm + " 分 " : "") + ss + " 秒";
+    }
+  } catch (e) {
+    document.getElementById("status").innerHTML =
+      '<span class="dot bad"></span>无法连接服务';
+  }
+}
+
+async function loadAddrs() {
+  try {
+    const r = await jget("/api/net/addresses");
+    const box = document.getElementById("addrs");
+    if (!r.addresses || !r.addresses.length) {
+      box.innerHTML = '<span class="mono">127.0.0.1:' + r.port + "</span>";
+      return;
+    }
+    box.innerHTML = r.addresses.map((a) =>
+      '<span class="mono" style="margin-right:6px">' + esc(a.address) + ":" + esc(r.port) + "</span>"
+    ).join("");
+  } catch (e) {
+    document.getElementById("addrs").textContent = "—";
+  }
+}
+
+async function loadDeps() {
+  try {
+    const d = await jget("/api/deps");
+    const box = document.getElementById("deps");
+    box.innerHTML = d.items.map((item) => {
+      let tag;
+      if (item.found) tag = '<span class="tag ok">已就绪</span>';
+      else if (item.optional) tag = '<span class="tag opt">可选未装</span>';
+      else tag = '<span class="tag bad">未安装</span>';
+      return '<div class="dep">' +
+        '<div class="name">' + esc(item.name) +
+          '<div class="role">' + esc(item.role) + "</div></div>" +
+        tag +
+        '<a href="' + esc(item.url) + '" target="_blank" rel="noopener">官网</a>' +
+        "</div>";
+    }).join("");
+  } catch (e) {
+    document.getElementById("deps").innerHTML =
+      '<div class="hint" style="color:var(--bad)">读取依赖清单失败：' + esc(e.message) + "</div>";
+  }
+}
+
+function load() {
+  loadHealth();
+  loadAddrs();
+  loadDeps();
+}
+load();
+setInterval(loadHealth, 5000);
+</script>
+</body>
+</html>

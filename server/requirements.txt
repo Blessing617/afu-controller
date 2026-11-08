@@ -1,0 +1,15 @@
+# 运行时依赖（从实际运行环境导出，版本为验证过的组合）
+fastapi==0.162.0
+uvicorn==0.54.0
+pydantic==2.14.2
+pillow==13.0.0
+pywin32==312
+pywinauto==0.6.9
+comtypes==1.4.17
+httpx2==2.16.0
+python-dotenv==1.2.4
+PyYAML==6.0.3
+
+# 接口文档的本地静态资源。
+# 不装也能跑，但 /docs 会退回 CDN 地址，国内网络下会白屏 —— 所以默认装上。
+swagger_ui_bundle==1.1.0
