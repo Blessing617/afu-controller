@@ -24,11 +24,6 @@ TARGETS = [ROOT / "desktop", ROOT / "server" / "app", ROOT / "android/app/src/ma
 
 # 已登记的存量超限文件：只报告、不静默通过（重构后应从这里删除）
 KNOWN_OVER = {
-    "android/app/src/main/java/com/afu/controller/ui/ChainScreen.kt",
-    "android/app/src/main/java/com/afu/controller/ui/TaskPickerSheet.kt",
-    "android/app/src/main/java/com/afu/controller/ui/ConnectPage.kt",
-    "android/app/src/main/java/com/afu/controller/ui/GameScreenParts.kt",
-    "android/app/src/main/java/com/afu/controller/ui/GameShell.kt",
     "desktop/main.py",
 }
 
